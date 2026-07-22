@@ -1,50 +1,55 @@
 #include <iostream>
-#include <stack>
 #include <string>
+#include <algorithm>
+
 using namespace std;
 
-bool isValid(string s)
+int longestValidParentheses(string s)
 {
-    stack<char> st;
+    int left = 0, right = 0;
+    int maxLength = 0;
 
+    // Left to Right
     for (char c : s)
     {
-        if (c == '(' || c == '[' || c == '{')
-        {
-            st.push(c);
-        }
+        if (c == '(')
+            left++;
         else
-        {
-            if (st.empty())
-                return false;
+            right++;
 
-            if (c == ')' && st.top() != '(')
-                return false;
-
-            if (c == ']' && st.top() != '[')
-                return false;
-
-            if (c == '}' && st.top() != '{')
-                return false;
-
-            st.pop();
-        }
+        if (left == right)
+            maxLength = max(maxLength, 2 * right);
+        else if (right > left)
+            left = right = 0;
     }
 
-    return st.empty();
+    left = right = 0;
+
+    // Right to Left
+    for (int i = s.length() - 1; i >= 0; i--)
+    {
+        if (s[i] == '(')
+            left++;
+        else
+            right++;
+
+        if (left == right)
+            maxLength = max(maxLength, 2 * left);
+        else if (left > right)
+            left = right = 0;
+    }
+
+    return maxLength;
 }
 
 int main()
 {
     string s;
-
-    cout << "Enter the string: ";
+    cout << "Enter parentheses string: ";
     cin >> s;
 
-    if (isValid(s))
-        cout << "Valid Parentheses" << endl;
-    else
-        cout << "Invalid Parentheses" << endl;
+    cout << "Longest Valid Parentheses Length = "
+         << longestValidParentheses(s);
 
     return 0;
 }
